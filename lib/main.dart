@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return LiquidGlassLayer(
       child: MaterialApp(
-        title: 'Liquid Glass iOS',
+        title: 'MT5 Liquid Glass',
         debugShowCheckedModeBanner: false,
         theme: GlassTheme.lightTheme,
         home: const MainLayout(),
@@ -22,4 +22,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

@@ -1,8 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import '../widgets/glass_app_bar.dart';
 import '../widgets/swipable_quote_card.dart';
 import '../models/quote.dart';
+import '../theme/glass_theme.dart';
 
 class MarketScreen extends StatefulWidget {
   const MarketScreen({super.key});
@@ -12,56 +12,116 @@ class MarketScreen extends StatefulWidget {
 }
 
 class _MarketScreenState extends State<MarketScreen> {
-  late ScrollController _scrollController;
-  double _scrollOffset = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      setState(() {
-        _scrollOffset = _scrollController.offset;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+  final ScrollController _scrollController = ScrollController();
+  int _segmentedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: GlassAppBar(
-        title: 'Quotes',
-        scrollOffset: _scrollOffset,
-      ),
-      body: ListView.builder(
+      backgroundColor: Colors.white,
+      body: CustomScrollView(
         controller: _scrollController,
-        padding: const EdgeInsets.fromLTRB(16, 120, 16, 120),
-        itemCount: mockQuotes.length,
-        itemBuilder: (context, index) {
-          return SwipableQuoteCard(
-            quote: mockQuotes[index],
-            onAdd: () => _showTopBarMessage(context, 'Added to favorites'),
-            onChart: () => _showTopBarMessage(context, 'Opening chart...'),
-            onDetail: () => _showTopBarMessage(context, 'Loading details...'),
-          ).animate().fadeIn(delay: (index * 20).ms).slideY(begin: 0.1, end: 0);
-        },
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 0,
+            backgroundColor: Colors.white.withValues(alpha: 0.9),
+            surfaceTintColor: Colors.transparent,
+            leading: IconButton(
+              icon: const Icon(CupertinoIcons.list_bullet, color: GlassTheme.iosBlue),
+              onPressed: () {},
+            ),
+            title: const Text(
+              'Quotes',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(CupertinoIcons.pencil, color: GlassTheme.iosBlue),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(CupertinoIcons.add, color: GlassTheme.iosBlue),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(CupertinoIcons.search, color: GlassTheme.iosBlue),
+                onPressed: () {},
+              ),
+            ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(40),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: GlassTheme.iosSystemGrey6,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      width: 0.5,
+                    ),
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildSegment('Simple', index: 0),
+                    _buildSegment('Advanced', index: 1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 120),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return SwipableQuoteCard(
+                    quote: mockQuotes[index],
+                    onAdd: () {},
+                    onChart: () {},
+                    onTrade: () {},
+                  );
+                },
+                childCount: mockQuotes.length,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  void _showTopBarMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 1),
-        behavior: SnackBarBehavior.floating,
+  Widget _buildSegment(String label, {required int index}) {
+    final bool isActive = _segmentedIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _segmentedIndex = index),
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          decoration: BoxDecoration(
+            color: isActive ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: isActive ? [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              )
+            ] : null,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              color: Colors.black,
+            ),
+          ),
+        ),
       ),
     );
   }

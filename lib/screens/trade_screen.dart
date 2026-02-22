@@ -1,8 +1,5 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import '../widgets/glass_container.dart';
-import '../widgets/glass_app_bar.dart';
-import '../widgets/glass_bottom_sheet.dart';
 import '../theme/glass_theme.dart';
 
 class TradeScreen extends StatelessWidget {
@@ -11,140 +8,134 @@ class TradeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: GlassAppBar(
-        title: 'Trade',
+      appBar: AppBar(
+        title: const Text('Trade'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline, color: GlassTheme.iosBlue),
-            onPressed: () => _showNewOrder(context),
+            icon: const Icon(CupertinoIcons.plus_circle, color: GlassTheme.iosBlue),
+            onPressed: () {},
           ),
         ],
       ),
-      body: Stack(
+      body: Column(
         children: [
-          // Mock Chart Area
-          Positioned.fill(
-            child: _buildMockChart(),
+          // Account Summary
+          Container(
+            color: GlassTheme.iosSystemGrey6.withValues(alpha: 0.5),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _buildSummaryRow('Balance:', '10 120.45', isBold: true),
+                const SizedBox(height: 4),
+                _buildSummaryRow('Equity:', '10 145.20', isBold: true),
+                const SizedBox(height: 4),
+                _buildSummaryRow('Margin:', '150.00'),
+                _buildSummaryRow('Free Margin:', '9 995.20'),
+                _buildSummaryRow('Margin Level (%):', '6763.5'),
+              ],
+            ),
           ),
-          // Glass Overlay for Trade Info
-          Positioned(
-            top: 20,
-            left: 20,
-            right: 20,
-            child: GlassContainer(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buildStat('Balance', '\$12,450.00'),
-                  _buildStat('Equity', '\$12,475.20'),
-                  _buildStat('Margin', '\$450.00'),
-                ],
-              ),
-            ).animate().slideY(begin: -0.2, end: 0).fadeIn(),
+          
+          // Positions Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: GlassTheme.iosSystemGrey6,
+            child: const Text(
+              'Positions',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.grey),
+            ),
+          ),
+          
+          // Positions List
+          Expanded(
+            child: ListView.separated(
+              itemCount: 3,
+              separatorBuilder: (context, index) => const Divider(height: 1, indent: 16),
+              itemBuilder: (context, index) {
+                return _buildPositionTile(
+                  symbol: index == 0 ? 'EURUSD' : (index == 1 ? 'GBPUSD' : 'XAUUSD'),
+                  type: 'buy',
+                  lots: index == 0 ? 0.10 : 0.05,
+                  entryPrice: 1.08450,
+                  currentPrice: 1.08472,
+                  profit: index == 0 ? 22.00 : -5.40,
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMockChart() {
-    return CustomPaint(
-      painter: ChartPainter(),
-    ).animate().fadeIn(duration: 800.ms);
-  }
-
-  Widget _buildStat(String label, String value) {
-    return Column(
+  Widget _buildSummaryRow(String label, String value, {bool isBold = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 10, color: Colors.black.withValues(alpha: 0.5)),
+          style: TextStyle(
+            fontSize: 13,
+            color: isBold ? Colors.black : Colors.black54,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
         Text(
           value,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87),
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.black,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          ),
         ),
       ],
     );
   }
 
-  void _showNewOrder(BuildContext context) {
-    GlassBottomSheet.show(
-      context,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget _buildPositionTile({
+    required String symbol,
+    required String type,
+    required double lots,
+    required double entryPrice,
+    required double currentPrice,
+    required double profit,
+  }) {
+    final isProfit = profit >= 0;
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      title: Row(
         children: [
-          const Text(
-            'New Market Order',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 30),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTradeButton('SELL', GlassTheme.iosRed),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildTradeButton('BUY', GlassTheme.iosGreen),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
           Text(
-            'Lot Size: 1.00',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black.withValues(alpha: 0.7)),
+            symbol,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(width: 8),
+          Text(
+            '$type $lots',
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildTradeButton(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.5)),
+      subtitle: Text(
+        '$entryPrice → $currentPrice',
+        style: const TextStyle(fontSize: 13),
       ),
-      child: Center(
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isProfit ? GlassTheme.iosBlue : GlassTheme.iosRed,
+          borderRadius: BorderRadius.circular(4),
+        ),
         child: Text(
-          label,
-          style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 18),
+          profit.toStringAsFixed(2),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
         ),
       ),
     );
   }
-}
-
-class ChartPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = GlassTheme.iosBlue.withValues(alpha: 0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    final path = Path();
-    path.moveTo(0, size.height * 0.7);
-    
-    for (double i = 0; i < size.width; i += 20) {
-      path.lineTo(i, size.height * (0.4 + (i % 100) / 200));
-    }
-
-    canvas.drawPath(path, paint);
-
-    // Add some random points
-    final pointPaint = Paint()..color = GlassTheme.iosBlue;
-    canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.5), 4, pointPaint);
-  }
-
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

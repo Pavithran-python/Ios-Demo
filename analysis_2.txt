@@ -1,0 +1,19 @@
+Analyzing ios...                                                
+
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/charts_screen.dart:53:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/market_screen.dart:30:39 • deprecated_member_use
+warning • Unused import: 'package:cupertino_icons/cupertino_icons.dart' • lib/screens/settings_screen.dart:2:8 • unused_import
+warning • Unused import: '../widgets/glass_app_bar.dart' • lib/screens/settings_screen.dart:3:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/trade_screen.dart:13:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/glass_theme.dart:47:29 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/glass_theme.dart:56:20 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/glass_theme.dart:57:20 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/glass_bottom_nav.dart:71:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/glass_bottom_nav.dart:74:37 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/glass_bottom_nav.dart:79:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/glass_bottom_nav.dart:127:55 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/glass_bottom_sheet.dart:31:41 • deprecated_member_use
+warning • Unused import: 'glass_container.dart' • lib/widgets/swipable_quote_card.dart:2:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/swipable_quote_card.dart:65:37 • deprecated_member_use
+
+15 issues found. (ran in 1.8s)

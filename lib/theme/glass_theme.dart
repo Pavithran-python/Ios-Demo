@@ -6,14 +6,29 @@ class GlassTheme {
   static const Color iosBlue = Color(0xFF007AFF);
   static const Color iosGreen = Color(0xFF34C759);
   static const Color iosRed = Color(0xFFFF3B30);
-  static const Color glassBackground = Color(0x99FFFFFF);
-  static const Color glassBorder = Color(0x4DFFFFFF);
-  static const Color lightBackground = Color(0xFFF2F2F7);
+  static const Color iosGrey = Color(0xFF8E8E93);
+  static const Color iosLightGrey = Color(0xFFD1D1D6);
+  static const Color iosSystemGrey6 = Color(0xFFF2F2F7);
+  static const Color glassBackground = Color(0xCCFFFFFF);
+  static const Color glassBorder = Color(0x4D000000);
+  static const Color lightBackground = Colors.white;
 
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: lightBackground,
     primaryColor: iosBlue,
+    dividerColor: iosLightGrey,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+      ),
+      iconTheme: IconThemeData(color: iosBlue),
+    ),
     textTheme: GoogleFonts.interTextTheme(
       ThemeData.light().textTheme,
     ).copyWith(
@@ -38,8 +53,8 @@ class GlassTheme {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
+      Colors.white.withOpacity(0.8),
       Colors.white.withOpacity(0.4),
-      Colors.white.withOpacity(0.1),
     ],
   );
 }
